@@ -29,11 +29,9 @@ def sample_noise(batch_size, dim, seed=None):
     if seed is not None:
         torch.manual_seed(seed)
 
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     return 2*torch.rand(batch_size,dim)-1
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 def discriminator(seed=None):
     """
@@ -45,12 +43,6 @@ def discriminator(seed=None):
 
     model = None
 
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful. You'll start by calling Flatten().   #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
       nn.Flatten(),
@@ -61,10 +53,6 @@ def discriminator(seed=None):
       nn.Linear(in_features=256, out_features=1, bias=True)
     )
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
     return model
 
 def generator(noise_dim=NOISE_DIM, seed=None):
@@ -77,12 +65,6 @@ def generator(noise_dim=NOISE_DIM, seed=None):
 
     model = None
 
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful.                                      #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
       nn.Linear(in_features=noise_dim, out_features=1024, bias=True),
@@ -92,11 +74,6 @@ def generator(noise_dim=NOISE_DIM, seed=None):
       nn.Linear(in_features=1024, out_features=784, bias=True),
       nn.Tanh()
     )
-
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
     return model
 
 def bce_loss(input, target):
@@ -125,14 +102,10 @@ def discriminator_loss(logits_real, logits_fake):
     - loss: PyTorch Tensor containing (scalar) the loss for the discriminator.
     """
     loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    # true_labels = torch.ones(logits_real.shape)
-    # bce_loss
     lr = bce_loss(logits_real,torch.ones(logits_real.shape[0]).type(dtype))
     lf = bce_loss(logits_fake,torch.zeros(logits_fake.shape[0]).type(dtype))
     loss = lr+lf
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 def generator_loss(logits_fake):
@@ -146,12 +119,10 @@ def generator_loss(logits_fake):
     - loss: PyTorch Tensor containing the (scalar) loss for the generator.
     """
     loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     
     loss = bce_loss(logits_fake,torch.ones(logits_fake.shape[0]).type(dtype))
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 def get_optimizer(model):
@@ -166,11 +137,9 @@ def get_optimizer(model):
     - An Adam optimizer for the model with the desired hyperparameters.
     """
     optimizer = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     optimizer = torch.optim.Adam(params=model.parameters(),lr=1e-3, betas=(0.5, 0.999))
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return optimizer
 
 def ls_discriminator_loss(scores_real, scores_fake):
@@ -185,12 +154,10 @@ def ls_discriminator_loss(scores_real, scores_fake):
     - loss: A PyTorch Tensor containing the loss.
     """
     loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     loss = (0.5*torch.mean((scores_real-1)**2)+\
     (0.5*torch.mean(scores_fake**2)))
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 def ls_generator_loss(scores_fake):
@@ -204,10 +171,8 @@ def ls_generator_loss(scores_fake):
     - loss: A PyTorch Tensor containing the loss.
     """
     loss = None
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     loss = torch.mean((0.5*(scores_fake-1)**2))
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     return loss
 
 def build_dc_classifier(batch_size):
@@ -216,12 +181,6 @@ def build_dc_classifier(batch_size):
     the architecture above.
     """
 
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful.                                      #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
       nn.Conv2d(in_channels=1, out_channels=32, kernel_size=(5,5), stride=1,bias=True),
@@ -237,10 +196,6 @@ def build_dc_classifier(batch_size):
     )
     return model
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
 
 
 def build_dc_generator(noise_dim=NOISE_DIM):
@@ -249,12 +204,6 @@ def build_dc_generator(noise_dim=NOISE_DIM):
     the architecture described above.
     """
 
-    ##############################################################################
-    # TODO: Implement architecture                                               #
-    #                                                                            #
-    # HINT: nn.Sequential might be helpful.                                      #
-    ##############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     model = nn.Sequential(
       nn.Linear(in_features=noise_dim,out_features=1024, bias=True),
@@ -274,10 +223,6 @@ def build_dc_generator(noise_dim=NOISE_DIM):
     )
     return model
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ##############################################################################
-    #                               END OF YOUR CODE                             #
-    ##############################################################################
 
 def run_a_gan(D, G, D_solver, G_solver, discriminator_loss, generator_loss, loader_train, show_every=250,
               batch_size=128, noise_size=96, num_epochs=10):
